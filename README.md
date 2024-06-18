@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+**Getting Started:** Development Environment Setup
 
-## Getting Started
+This guide details setting up your development environment for this application.
 
-First, run the development server:
+**Prerequisites:**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* **Docker:** [https://www.docker.com/](https://www.docker.com/)
+* **Node.js and npm (or pnpm):** [https://nodejs.org/en](https://nodejs.org/en) (includes npm) or [https://pnpm.io/installation](https://pnpm.io/installation)
+* **Prisma:** [https://www.prisma.io/](https://www.prisma.io/)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Setup Instructions:**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Start the Database:**
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+   Use Docker Compose to start the database in detached mode:
 
-## Learn More
+   ```bash
+   docker compose up -d
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. **Install Dependencies:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   After starting the database, install project dependencies:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+   ```bash
+   pnpm install  # Or npm install if using npm
+   ```
 
-## Deploy on Vercel
+3. **Start the Development Server:**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   Run the development server using `pnpm dev`:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+   ```bash
+   pnpm dev
+   ```
+
+4. **Initialize Prisma:**
+
+   Set up Prisma in your project by running:
+
+   ```bash
+   npx prisma init
+   ```
+
+5. **Configure Environment Variables (Optional):**
+
+   - Rename `.env.template` to `.env`.
+   - Replace placeholder values in `.env` with your actual environment variables (API keys, database credentials, etc.). Refer to the `.env.template` file for guidance.
+
+6. **Database Migrations and Seeding:**
+
+   - Run Prisma migrations to update your database schema and generate the Prisma client:
+
+     ```bash
+     npx prisma migrate dev
+     npx prisma generate
+     ```
+
+   - Seed your local database by accessing the following URL in your browser or an HTTP client:
+
+     ```
+     https://${your_server}:${your_port_number}/api/seed
+     ```
+
+     Replace `${your_server}` and `${your_port_number}` with your actual server address and port number (usually found in terminal output when starting the development server).# next-todo-app
