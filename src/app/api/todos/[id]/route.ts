@@ -29,23 +29,26 @@ export async function GET(request: Request, { params: { id } }: Segments) {
 }
 
 const putSchema = yup.object({
-  title: yup.string().required(),
-  description: yup.string().optional().default(''),
+  title: yup.string().optional(),
+  description: yup.string().optional(),
   completed: yup.boolean().optional().default(false),
 });
 
 export async function PUT(req: Request, { params: { id } }: Segments) {
 
-  const todo = await getTodo(id);
+  const queriedTodo = await getTodo(id);
 
-  if (!todo) {
+  console.log(`🚀 ~ PUT ~ queriedTodo:`, queriedTodo);
+
+
+  if (!queriedTodo) {
     return NextResponse.json({ message: `Todo id: ${id} not found` }, { status: 404 });
   }
 
   try {
     const {
-      title,
-      description,
+      title = queriedTodo.title,
+      description = queriedTodo.description,
       completed
     } = await putSchema.validate(await req.json());
 
@@ -65,7 +68,7 @@ export async function PUT(req: Request, { params: { id } }: Segments) {
     return NextResponse.json(todo, { status: 200 });
 
   } catch (error: any) {
-    return NextResponse.json({ message: error.message }, {
+    return NextResponse.json({ error: error.message }, {
       status: 400
     });
   }

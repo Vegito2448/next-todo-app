@@ -9,9 +9,9 @@ export async function GET(request: Request) {
 
   const skip = parseInt(searchParams.get('skip') ?? '0');
 
-  if (isNaN(+take)) return NextResponse.json({ message: 'Invalid take parameter: ' + take }, { status: 400 });
+  if (isNaN(+take)) return NextResponse.json({ error: 'Invalid take parameter: ' + take }, { status: 400 });
 
-  if (isNaN(+skip)) return NextResponse.json({ message: 'Invalid skip parameter: ' + skip }, { status: 400 });
+  if (isNaN(+skip)) return NextResponse.json({ error: 'Invalid skip parameter: ' + skip }, { status: 400 });
 
   const todos = await prisma.todo.findMany({
     take,
@@ -47,9 +47,25 @@ export async function POST(req: Request) {
     return NextResponse.json(todo, { status: 201 });
 
   } catch (error: any) {
-    return NextResponse.json({ message: error.message }, {
+    return NextResponse.json({ error: error.message }, {
       status: 400
     });
   }
+
+}
+
+export async function DELETE(req: Request) {
+
+  const deleteAll = await prisma.todo.deleteMany({
+    where: {
+      completed: true
+    }
+  });
+
+  console.log(`🚀 ~ DELETE ~ deleteAll:`, deleteAll);
+
+
+  return NextResponse.json(deleteAll, { status: 204 });
+
 
 }
