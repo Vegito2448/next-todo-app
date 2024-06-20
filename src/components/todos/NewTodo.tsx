@@ -1,6 +1,6 @@
 'use client';
 
-import { createTodo, deleteCompleted } from "@/helpers";
+import { addTodo, deleteCompleted } from "@/actions";
 import { Todo } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
@@ -20,7 +20,7 @@ export const NewTodo = () => {
     const description = formData.get('description') as string;
     const completed = formData.get('completed') === 'on';
     const newTodo = { title, description, completed } as Todo;
-    const create = await createTodo(newTodo);
+    const create = await addTodo(newTodo);
 
     if (create) {
       formRef.current?.reset();
@@ -59,11 +59,7 @@ export const NewTodo = () => {
       <span className='flex flex-1'></span>
 
       <button
-        onClick={() => {
-          deleteCompleted();
-
-          router.refresh();
-        }}
+        onClick={async () => await deleteCompleted()}
         type='button' className="flex items-center justify-center rounded ml-2 bg-red-400 p-2 text-white hover:bg-red-700 transition-all">
         <IoTrashOutline className="mr-2" />
         Delete Completed Todos

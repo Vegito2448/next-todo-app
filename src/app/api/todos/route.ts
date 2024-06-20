@@ -62,8 +62,6 @@ export async function DELETE(req: Request) {
     }
   });
 
-  console.log(`🚀 ~ DELETE ~ deleteAll:`, deleteAll);
-
 
   return NextResponse.json(deleteAll, { status: 204 });
 

@@ -1,6 +1,6 @@
 import { Todo } from "@prisma/client";
 
-export const toggleTodoStatus = async (id: string, completed: boolean) => {
+export const toggleTodoStatus = async ({ id, completed }: Todo) => {
   const body = JSON.stringify({ completed });
   const todo: Promise<Todo | {
     error: string;
