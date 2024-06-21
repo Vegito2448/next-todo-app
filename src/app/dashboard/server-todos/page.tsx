@@ -18,9 +18,6 @@ export default async function SeverTodosPage() {
     },
   });
 
-  console.log('builded server todos page');
-
-
   return (
     <div>
       <span className="text-3xl mb-10">Server Actions</span>

@@ -1,5 +1,4 @@
 'use server';
-import { sleep } from "@/helpers";
 import prisma from "@/lib/prisma";
 import { Todo } from '@prisma/client';
 import { revalidatePath } from "next/cache";
@@ -7,7 +6,6 @@ import { revalidatePath } from "next/cache";
 
 
 export const toggleTodo = async ({ id, completed }: Todo) => {
-  await sleep(3);
 
   const todo = await prisma.todo.findFirst({
     where: {

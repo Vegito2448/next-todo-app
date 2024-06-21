@@ -17,9 +17,6 @@ export default async function RestTodosPage() {
     },
   });
 
-  console.log('builded rest todos page');
-
-
   return (
     <div>
       <div className="w-full px-5 mx-5 mb-5">
