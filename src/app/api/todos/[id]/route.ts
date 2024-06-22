@@ -1,3 +1,4 @@
+import { getSignedInUser } from "@/actions";
 import prisma from "@/lib/prisma";
 import { NextResponse } from 'next/server';
 import * as yup from 'yup';
@@ -9,23 +10,46 @@ interface Segments {
 }
 
 
-const getTodo = async (id: string) => await prisma.todo.findUnique({
-  where: {
-    id
+const getTodo = async (id: string) => {
+  try {
+
+    const user = await getSignedInUser();
+
+    if (!user) throw new Error('User not found');
+
+    const todo = await prisma.todo.findFirst({
+      where: {
+        id
+      }
+    });
+
+    if (todo?.userId !== user.id) throw new Error('Unauthorized access to todo item');
+
+    return todo;
+
+  } catch (error: any) {
+    return error;
   }
-});
+
+};
 
 export async function GET(request: Request, { params: { id } }: Segments) {
-  console.log(`🚀 ~ file: route.ts ~ line 3 ~ GET ~ id`, id);
+  try {
 
-  const todo = await getTodo(id);
+    const todo = await getTodo(id);
 
-  if (!todo) {
-    return NextResponse.json({ message: `Todo id: ${id} not found` }, { status: 404 });
+    if (!todo) {
+      return NextResponse.json({ message: `Todo id: ${id} not found` }, { status: 404 });
+    }
+
+
+    return NextResponse.json(todo, { status: 200 });
+
+  } catch (error: any) {
+
+    return NextResponse.json({ error: error?.message }, { status: 400 });
+
   }
-
-
-  return NextResponse.json(todo);
 }
 
 const putSchema = yup.object({
@@ -36,14 +60,17 @@ const putSchema = yup.object({
 
 export async function PUT(req: Request, { params: { id } }: Segments) {
 
+  const user = await getSignedInUser();
+
+  if (!user) return NextResponse.json({ error: 'User not found' }, { status: 401 });
+
   const queriedTodo = await getTodo(id);
-
-  console.log(`🚀 ~ PUT ~ queriedTodo:`, queriedTodo);
-
 
   if (!queriedTodo) {
     return NextResponse.json({ message: `Todo id: ${id} not found` }, { status: 404 });
   }
+
+  if (queriedTodo.userId !== user.id) return NextResponse.json({ error: 'Unauthorized access to todo item' }, { status: 401 });
 
   try {
     const {

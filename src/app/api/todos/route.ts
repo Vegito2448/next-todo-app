@@ -1,8 +1,14 @@
+import { getSignedInUser } from "@/actions";
 import prisma from "@/lib/prisma";
 import { NextResponse } from 'next/server';
 import * as yup from 'yup';
 
 export async function GET(request: Request) {
+
+  const user = await getSignedInUser();
+
+  if (!user) return NextResponse.json({ error: 'User not found' }, { status: 401 });
+
   const { searchParams } = new URL(request.url);
 
   const take = parseInt(searchParams.get('take') ?? '10');
@@ -15,7 +21,10 @@ export async function GET(request: Request) {
 
   const todos = await prisma.todo.findMany({
     take,
-    skip
+    skip,
+    where: {
+      userId: user.id
+    },
   });
 
   return NextResponse.json(todos);
@@ -28,8 +37,12 @@ const postSchema = yup.object({
 });
 
 export async function POST(req: Request) {
-
   try {
+
+    const user = await getSignedInUser();
+
+    if (!user) return NextResponse.json({ error: 'User not found' }, { status: 401 });
+
     const {
       title,
       description,
@@ -39,7 +52,8 @@ export async function POST(req: Request) {
     const data = {
       title,
       description,
-      completed
+      completed,
+      userId: user.id!
     };
 
     const todo = await prisma.todo.create({ data });
@@ -56,14 +70,18 @@ export async function POST(req: Request) {
 
 export async function DELETE(req: Request) {
 
+  const user = await getSignedInUser();
+
+  if (!user) return NextResponse.json({ error: 'User not found' }, { status: 401 });
+
   const deleteAll = await prisma.todo.deleteMany({
     where: {
-      completed: true
+      completed: true,
+      userId: user.id
     }
   });
 
 
   return NextResponse.json(deleteAll, { status: 204 });
-
 
 }

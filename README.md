@@ -63,3 +63,8 @@ This guide details setting up your development environment for this application.
      ```
 
      Replace `${your_server}` and `${your_port_number}` with your actual server address and port number (usually found in terminal output when starting the development server).# next-todo-app
+
+## Note: Go to sigIn Page and Login With this credentials or use default OAuth's
+if you use a default OAuth you have to create new Todos manually. Default user with seed:
+__user:__ test1@domain.com
+__password:__ 12345678

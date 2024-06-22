@@ -2,14 +2,18 @@
 import prisma from "@/lib/prisma";
 import { Todo } from '@prisma/client';
 import { revalidatePath } from "next/cache";
-
-
+import { getSignedInUser } from "./auth-actions";
 
 export const toggleTodo = async ({ id, completed }: Todo) => {
 
+  const user = await getSignedInUser();
+
+  if (!user) throw new Error('User not found');
+
   const todo = await prisma.todo.findFirst({
     where: {
-      id
+      id,
+      userId: user.id
     }
   });
 
@@ -33,10 +37,15 @@ export const toggleTodo = async ({ id, completed }: Todo) => {
 export const addTodo = async ({ completed, description, title }: Todo) => {
   try {
 
+    const user = await getSignedInUser();
+
+    if (!user) throw new Error('User not found');
+
     const data = {
       title,
       description,
-      completed
+      completed,
+      userId: user.id!
     };
 
     const todo = await prisma.todo.create({ data });
@@ -54,9 +63,15 @@ export const addTodo = async ({ completed, description, title }: Todo) => {
 
 export const deleteCompleted = async () => {
   try {
+
+    const user = await getSignedInUser();
+
+    if (!user) throw new Error('User not found');
+
     const completed = await prisma.todo.deleteMany({
       where: {
-        completed: true
+        completed: true,
+        userId: user.id
       }
     });
 
