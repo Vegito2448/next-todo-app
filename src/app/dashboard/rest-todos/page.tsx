@@ -1,6 +1,5 @@
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
-
 import { getSignedInUser } from "@/actions";
 import { NewTodo, TodosGrid } from '@/components';
 import prisma from "@/lib/prisma";

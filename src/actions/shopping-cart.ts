@@ -1,19 +1,22 @@
-import { getCookie, hasCookie, setCookie } from "cookies-next";
+"use server";
 
-export const getCookieCart = (): {
-  [id: string]: number;
-} => {
+import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 
-  if (hasCookie('cart')) {
-    const cookieCart = JSON.parse(getCookie('cart') ?? '{}');
+export const getCookieCart = async (): Promise<{ [id: string]: number }> => {
+  const cookieStore = await cookies();
+  const hasCookie = cookieStore.has("cart");
+  if (hasCookie) {
+    const cookieCart = JSON.parse(cookieStore.get("cart")?.value ?? "{}");
     return cookieCart;
   }
 
   return {};
 };
 
-export const addProductToCart = (id: string) => {
-  const cookieCart = getCookieCart();
+export const addProductToCart = async (id: string) => {
+  const cookieCart = await getCookieCart();
+  const cookieStore = await cookies();
 
   if (cookieCart[id]) {
     cookieCart[id] += 1;
@@ -21,24 +24,24 @@ export const addProductToCart = (id: string) => {
     cookieCart[id] = 1;
   }
 
-  setCookie('cart', JSON.stringify(cookieCart));
-
+  cookieStore.set("cart", JSON.stringify(cookieCart));
+  revalidatePath("/products");
+  revalidatePath("/cart");
 };
 
-export const removeProductFromCart = (id: string) => {
-
-  const cookieCart = getCookieCart();
-
+export const removeProductFromCart = async (id: string) => {
+  const cookieCart = await getCookieCart();
+  const cookieStore = await cookies();
   if (cookieCart[id]) delete cookieCart[id];
 
-  setCookie('cart', JSON.stringify(cookieCart));
+  cookieStore.set("cart", JSON.stringify(cookieCart));
+  revalidatePath("/products");
+  revalidatePath("/cart");
 };
 
-export const removeSingleProductFromCart = (id: string) => {
-
-  const cookieCart = getCookieCart();
-
-  console.log(`🚀 ~ removeSingleProductFromCart ~ cookieCart:`, cookieCart);
+export const removeSingleProductFromCart = async (id: string) => {
+  const cookieCart = await getCookieCart();
+  const cookieStore = await cookies();
 
   if (!cookieCart[id]) return;
 
@@ -48,5 +51,7 @@ export const removeSingleProductFromCart = (id: string) => {
     cookieCart[id] -= 1;
   }
 
-  setCookie('cart', JSON.stringify(cookieCart));
+  cookieStore.set("cart", JSON.stringify(cookieCart));
+  revalidatePath("/products");
+  revalidatePath("/cart");
 };

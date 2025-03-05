@@ -15,9 +15,9 @@ export async function GET(request: Request) {
 
   const skip = parseInt(searchParams.get('skip') ?? '0');
 
-  if (isNaN(+take)) return NextResponse.json({ error: 'Invalid take parameter: ' + take }, { status: 400 });
+  if (isNaN(take)) return NextResponse.json({ error: 'Invalid take parameter: ' + take }, { status: 400 });
 
-  if (isNaN(+skip)) return NextResponse.json({ error: 'Invalid skip parameter: ' + skip }, { status: 400 });
+  if (isNaN(skip)) return NextResponse.json({ error: 'Invalid skip parameter: ' + skip }, { status: 400 });
 
   const todos = await prisma.todo.findMany({
     take,

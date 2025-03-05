@@ -4,9 +4,9 @@ import { NextResponse } from 'next/server';
 import * as yup from 'yup';
 
 interface Segments {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 
@@ -33,7 +33,13 @@ const getTodo = async (id: string) => {
 
 };
 
-export async function GET(request: Request, { params: { id } }: Segments) {
+export async function GET(request: Request, props: Segments) {
+  const params = await props.params;
+
+  const {
+    id
+  } = params;
+
   try {
 
     const todo = await getTodo(id);
@@ -58,7 +64,12 @@ const putSchema = yup.object({
   completed: yup.boolean().optional().default(false),
 });
 
-export async function PUT(req: Request, { params: { id } }: Segments) {
+export async function PUT(req: Request, props: Segments) {
+  const params = await props.params;
+
+  const {
+    id
+  } = params;
 
   const user = await getSignedInUser();
 
@@ -99,5 +110,4 @@ export async function PUT(req: Request, { params: { id } }: Segments) {
       status: 400
     });
   }
-
 }

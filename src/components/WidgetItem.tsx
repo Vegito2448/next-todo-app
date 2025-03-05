@@ -1,7 +1,5 @@
-
-interface Props {
+interface Props extends React.PropsWithChildren {
   title: string;
-  children?: React.ReactNode;
 }
 
 export const WidgetItem = ({ children, title }: Props) => {

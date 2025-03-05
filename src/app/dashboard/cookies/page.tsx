@@ -7,8 +7,8 @@ export const metadata = {
   description: 'This is the cookies page description',
 };
 
-export default function CookiesPage() {
-  const cookieStore = cookies();
+export default async function CookiesPage() {
+  const cookieStore = await cookies();
   const cookieTab = cookieStore.get('currentTab')?.value ?? 1;
 
   console.log(`🚀 ~ CookiesPage ~ cookieTab:`, cookieTab);
@@ -21,7 +21,7 @@ export default function CookiesPage() {
     >
       <div className="flex flex-col">
         <span className="text-3xl">Tabs</span>
-        < TabBar
+        <TabBar
           currentTab={+cookieTab}
         />
       </div>

@@ -26,9 +26,9 @@ const getProductsInCart = (cart: { [id: string]: number; }) => {
   return productsInCart;
 };
 
-export default function CartPage() {
+export default async function CartPage() {
 
-  const cookiesStore = cookies();
+  const cookiesStore = await cookies();
 
   const cart = JSON.parse(cookiesStore.get('cart')?.value ?? '{}');
 

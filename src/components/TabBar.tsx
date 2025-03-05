@@ -30,7 +30,7 @@ export const TabBar = ({ tabOptions = tabOptsDefault, currentTab = tabOptsDefaul
           <div key={index} className="flex justify-center items-center">
             <input
               checked={selected === tab.id}
-              onClick={() => handleTabChange(tab.id)}
+              onClick={handleTabChange.bind(null, tab.id)}
               type="radio"
               id={`${tab.id}`}
               className="peer hidden"

@@ -1,8 +1,6 @@
-'use client';
 import { addProductToCart, removeSingleProductFromCart } from "@/actions";
 import type { Product } from "@/components";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { IoAddCircleOutline, IoRemove } from "react-icons/io5";
 
 interface Props {
@@ -13,16 +11,16 @@ interface Props {
 
 export const ItemCard = ({ product, quantity }: Props) => {
 
-  const router = useRouter();
+  // const router = useRouter();
 
-  function onAddToCart() {
-    addProductToCart(product.id);
-    router.refresh();
+  async function onAddToCart() {
+    await addProductToCart(product.id);
+  // router.refresh();
   }
 
-  function onRemoveItem() {
-    removeSingleProductFromCart(product.id);
-    router.refresh();
+  async function onRemoveItem() {
+    await removeSingleProductFromCart(product.id);
+  // router.refresh();
   }
 
   return (

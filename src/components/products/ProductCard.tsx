@@ -1,7 +1,5 @@
-'use client';
 import { addProductToCart, removeProductFromCart } from "@/actions";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { IoAddCircleOutline, IoTrashOutline } from "react-icons/io5";
 import { Start } from "./Start";
 import { Product } from "./data";
@@ -10,16 +8,16 @@ interface Props extends Product { }
 
 export const ProductCard = ({ id, name, price, rating, image }: Props) => {
 
-  const router = useRouter();
+  // const router = useRouter();
 
-  const onAddToCart = () => {
-    addProductToCart(id);
-    router.refresh();
+  const onAddToCart = async () => {
+    await addProductToCart(id);
+  // router.refresh();
   };
 
-  const onRemoveFromCart = () => {
-    removeProductFromCart(id);
-    router.refresh();
+  const onRemoveFromCart = async () => {
+    await removeProductFromCart(id);
+  // router.refresh();
   };
 
   return (
